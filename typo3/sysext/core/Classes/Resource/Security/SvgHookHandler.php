@@ -41,7 +41,8 @@ class SvgHookHandler
     public function processMoveUploadedFile(array $parameters)
     {
         $filePath = $parameters['source'] ?? null;
-        if ($filePath !== null && $this->typeCheck->forFilePath($filePath)) {
+        $targetPath = $parameters['destination'] ?? '';
+        if ($filePath !== null && ($this->typeCheck->forFileName($targetPath) || $this->typeCheck->forFilePath($filePath))) {
             $this->sanitizer->sanitizeFile($filePath);
         }
     }

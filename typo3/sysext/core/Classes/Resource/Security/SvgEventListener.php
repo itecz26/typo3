@@ -44,7 +44,7 @@ class SvgEventListener
     public function beforeFileAdded(BeforeFileAddedEvent $event): void
     {
         $filePath = $event->getSourceFilePath();
-        if ($this->typeCheck->forFilePath($filePath)) {
+        if ($this->typeCheck->forFileName($event->getFileName()) || $this->typeCheck->forFilePath($filePath)) {
             $this->sanitizer->sanitizeFile($filePath);
         }
     }
@@ -53,7 +53,7 @@ class SvgEventListener
     public function beforeFileReplaced(BeforeFileReplacedEvent $event): void
     {
         $filePath = $event->getLocalFilePath();
-        if ($this->typeCheck->forFilePath($filePath)) {
+        if ($this->typeCheck->forResource($event->getFile()) || $this->typeCheck->forFilePath($filePath)) {
             $this->sanitizer->sanitizeFile($filePath);
         }
     }

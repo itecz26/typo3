@@ -47,10 +47,20 @@ class SvgTypeCheck
     public function forFilePath(string $filePath): bool
     {
         $fileInfo = GeneralUtility::makeInstance(FileInfo::class, $filePath);
-        $fileExtension = $fileInfo->getExtension();
         $mimeType = $fileInfo->getMimeType();
-        return in_array($fileExtension, $this->fileExtensions, true)
+        return $this->forFileName($filePath)
             || in_array($mimeType, self::MIME_TYPES, true);
+    }
+
+    /**
+     * Decides by the file extension only, for the name a file is persisted
+     * as when its content is only available in an extension-less temporary
+     * file (e.g. a PHP upload), where mime-type detection alone is not reliable.
+     */
+    public function forFileName(string $fileName): bool
+    {
+        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        return in_array($fileExtension, $this->fileExtensions, true);
     }
 
     public function forResource(FileInterface $file): bool
