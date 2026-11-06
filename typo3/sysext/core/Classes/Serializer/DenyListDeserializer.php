@@ -26,8 +26,8 @@ use TYPO3\CMS\Core\Serializer\Exception\DeserializerException;
 
 /**
  * Deserializes a PHP-serialized payload while refusing any class that carries
- * a user-defined __destruct() or __wakeup(), or an exploitable __unserialize()
- * (one not provided solely by BlockSerializationTrait).
+ * a user-defined __destruct(), __wakeup() or Serializable::unserialize(), or an
+ * exploitable __unserialize() (one not provided solely by BlockSerializationTrait).
  *
  * The per-class deny/allow decision is made lazily via ReflectionClass at the
  * first encounter of each class name, then cached in cache:core so that
@@ -126,7 +126,8 @@ final readonly class DenyListDeserializer
         }
         return $this->getUserDefinedMethod($rc, '__destruct') !== null
             || $this->getUserDefinedMethod($rc, '__wakeup') !== null
-            || $this->hasDeniableUnserializeMethod($rc);
+            || $this->hasDeniableUnserializeMethod($rc)
+            || ($rc->implementsInterface(\Serializable::class) && $this->getUserDefinedMethod($rc, 'unserialize') !== null);
     }
 
     /**
