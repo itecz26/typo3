@@ -99,6 +99,18 @@ final class DenyListDeserializerTest extends FunctionalTestCase
     }
 
     #[Test]
+    public function classWithSerializableUnserializeIsBlocked(): void
+    {
+        // A `C:` token invokes Serializable::unserialize() and skips __unserialize(),
+        // so BlockSerializationTrait does not protect this class
+        $className = Fixtures\ClassWithSerializableUnserialize::class;
+        $serialized = 'C:' . strlen($className) . ':"' . $className . '":0:{}';
+        $this->expectException(DeserializerException::class);
+        $this->expectExceptionCode(1778594101);
+        $this->subject->deserialize($serialized);
+    }
+
+    #[Test]
     public function classWithOnlyBlockSerializationTraitIsAllowed(): void
     {
         // BackendFormProtection inherits BlockSerializationTrait's __unserialize (throws on deserialization)

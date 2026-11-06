@@ -192,8 +192,9 @@ return [
         ],
         'deserialization' => [
             // List of class names that are allowed to be deserialized even if they carry
-            // __destruct(), __wakeup() or __unserialize() and would otherwise be blocked. Use this to
-            // explicitly permit classes that have been reviewed and are known to be safe.
+            // __destruct(), __wakeup(), __unserialize() or Serializable::unserialize() and would
+            // otherwise be blocked. Use this to explicitly permit classes that have been reviewed
+            // and are known to be safe.
             'allowedClassNames' => [
                 // Scheduler task entries prior to v9.5.4 contained
                 // a serialized logger instance.

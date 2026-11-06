@@ -30,9 +30,10 @@ class of all Extbase entities and value objects, implements
 
 The internal deserializer used by :php-short:`\TYPO3\CMS\Core\Registry` and
 by upgrade wizards now also rejects classes with a user-defined
-:php:`__unserialize()` method, unless that method is provided by
-:php-short:`\TYPO3\CMS\Core\Security\BlockSerializationTrait` or the class is
-listed in
+:php:`__unserialize()` or :php:`\Serializable::unserialize()` method. A
+:php:`__unserialize()` method provided by
+:php-short:`\TYPO3\CMS\Core\Security\BlockSerializationTrait` is not rejected,
+neither are classes listed in
 :php:`$GLOBALS['TYPO3_CONF_VARS']['SYS']['deserialization']['allowedClassNames']`.
 
 Impact
