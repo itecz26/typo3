@@ -206,4 +206,38 @@ final class ImportTest extends AbstractImportExportTestCase
         $subject->setPid(0);
         $subject->loadFile('EXT:impexp/Tests/Functional/Fixtures/T3dExports/empty-z.t3d');
     }
+
+    #[Test]
+    public function writeSysFileRecordsRejectsPathTraversalInSha1Hash(): void
+    {
+        $subject = $this->get(Import::class);
+
+        // Pin the temporary folder, then point the (attacker-controlled) sha1 field one
+        // level above it. Without the hash validation the embedded content is written to
+        // $sentinel, outside the temporary folder.
+        $temporaryFolder = $subject->getOrCreateTemporaryFolderName();
+        $sentinel = dirname($temporaryFolder) . '/impexp_traversal_' . bin2hex(random_bytes(6)) . '.php';
+        $this->testFilesToDelete[] = $sentinel;
+        self::assertFileDoesNotExist($sentinel);
+
+        $dat = [
+            'header' => ['records' => ['sys_file' => [1 => []]]],
+            'records' => ['sys_file:1' => ['data' => [
+                'uid' => 1,
+                'storage' => 1,
+                'identifier' => '/user_upload/evil.php',
+                'identifier_hash' => 'deadbeef',
+                'name' => 'evil.php',
+                'sha1' => '../' . basename($sentinel),
+            ]]],
+            'files_fal' => [md5('1:deadbeef') => ['content' => "<?php echo 'pwned';"]],
+        ];
+
+        $reflection = new \ReflectionObject($subject);
+        $reflection->getProperty('dat')->setValue($subject, $dat);
+        $reflection->getProperty('isFilesSavedOutsideImportFile')->setValue($subject, false);
+        $reflection->getMethod('writeSysFileRecords')->invoke($subject);
+
+        self::assertFileDoesNotExist($sentinel);
+    }
 }

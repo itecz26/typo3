@@ -592,6 +592,17 @@ class Import extends ImportExport
         foreach ($this->dat['header']['records']['sys_file'] as $sysFileUid => $_) {
             $fileRecord = &$this->dat['records']['sys_file:' . $sysFileUid]['data'];
 
+            // The sha1 is taken verbatim from the untrusted import file and used as the
+            // temporary file name below. Reject anything that is not a plain sha1 hash so
+            // the path cannot traverse out of the temporary folder.
+            if (!preg_match('/^[0-9a-f]{40}$/i', (string)($fileRecord['sha1'] ?? ''))) {
+                $this->addError(sprintf(
+                    'Error: Invalid sha1 hash for sys_file record %s, file skipped.',
+                    $sysFileUid
+                ));
+                continue;
+            }
+
             $temporaryFile = null;
             $temporaryFilePath = $temporaryFolder . '/' . $fileRecord['sha1'];
 
