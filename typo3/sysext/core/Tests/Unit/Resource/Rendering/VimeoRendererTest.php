@@ -237,7 +237,7 @@ final class VimeoRendererTest extends UnitTestCase
         $fileResourceStub = self::createStub(File::class);
 
         self::assertSame(
-            '<iframe src="https://player.vimeo.com/video/7331&lt;script&gt;danger&lt;?h=script&gt;&apos;&quot;random&quot;quotes;&amp;dnt=1&amp;title=0&amp;byline=0&amp;portrait=0" allowfullscreen width="300" height="200" allow="fullscreen"></iframe>',
+            '<iframe src="https://player.vimeo.com/video/7331%3Cscript%3Edanger%3C?h=script%3E%27%22random%22quotes%3B&amp;dnt=1&amp;title=0&amp;byline=0&amp;portrait=0" allowfullscreen width="300" height="200" allow="fullscreen"></iframe>',
             $subject->render($fileResourceStub, '300m', '200')
         );
     }

@@ -125,7 +125,7 @@ class VimeoRenderer implements FileRendererInterface
 
         $urlParams = [];
         if (!empty($hash)) {
-            $urlParams[] = 'h=' . $hash;
+            $urlParams[] = 'h=' . rawurlencode($hash);
         }
         if (!empty($options['autoplay'])) {
             $urlParams[] = 'autoplay=1';
@@ -147,7 +147,7 @@ class VimeoRenderer implements FileRendererInterface
         $urlParams[] = 'title=' . (int)!empty($options['showinfo']);
         $urlParams[] = 'byline=' . (int)!empty($options['showinfo']);
         $urlParams[] = 'portrait=0';
-        return sprintf('https://player.vimeo.com/video/%s?%s', $videoId, implode('&', $urlParams));
+        return sprintf('https://player.vimeo.com/video/%s?%s', rawurlencode($videoId), implode('&', $urlParams));
     }
 
     /**

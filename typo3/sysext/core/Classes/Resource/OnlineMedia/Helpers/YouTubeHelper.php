@@ -49,7 +49,7 @@ class YouTubeHelper extends AbstractOEmbedHelper
             $tryNames = ['maxresdefault.jpg', 'sddefault.jpg', 'hqdefault.jpg', 'mqdefault.jpg', '0.jpg'];
             foreach ($tryNames as $tryName) {
                 $previewImage = GeneralUtility::getUrl(
-                    sprintf('https://img.youtube.com/vi/%s/%s', $videoId, $tryName)
+                    sprintf('https://img.youtube.com/vi/%s/%s', rawurlencode($videoId), $tryName)
                 );
                 if ($previewImage !== false) {
                     GeneralUtility::writeFile($temporaryFileName, $previewImage, true);
