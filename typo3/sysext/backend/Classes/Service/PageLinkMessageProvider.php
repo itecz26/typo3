@@ -199,7 +199,7 @@ readonly class PageLinkMessageProvider
         return sprintf(
             $languageService->translate('link_current_with_added_queryparameters', 'backend.pages.messages'),
             $languageService->translate('doktype.link', 'core.db.pages'),
-            $queryParameters,
+            htmlspecialchars($queryParameters),
         );
     }
 
